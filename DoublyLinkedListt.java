@@ -34,8 +34,6 @@ public class DoublyLinkedListt<T> {
     public DoublyLinkedListt(){
         this.size = 0;
         header = new Node<>(null,null,null);
-        // How give null value - for "int value" in header Node
-        // So I dont need it, becase now I use Generics
         trailer = new Node<>(null, header, null);
         header.setNext(trailer);
     }
@@ -57,17 +55,37 @@ public class DoublyLinkedListt<T> {
         }
         return trailer.getPrev().getValue();
     }
-    private void addBetween(T value, Node<T> aheadNewest, Node<T> behindNewest){
-        Node<T> newest = new Node<>(value, aheadNewest,behindNewest);
-        // wrong down
-        aheadNewest.setNext(newest);
-        behindNewest.setPrev(newest);
+    public void addFirst(T nodeToAdd){
+        addBetween(nodeToAdd, header, header.getNext());
+    }
+    public void addLast(T nodeToAdd){
+        addBetween(nodeToAdd, trailer.getPrev(), trailer);
+    }
+    public T removeFirst(){
+        if(isEmpty()){
+            return null;
+        }
+        return remove(header.getNext());
+    }
+    public T removeLast(){
+        if(isEmpty()){
+            return null;
+        }
+        return remove(trailer.getPrev());
+    }
+    // predecessor --> Node --> successor
+    private void addBetween(T value, Node<T> predecessor, Node<T> successor){
+        Node<T> newest = new Node<>(value, predecessor,successor);
+        predecessor.setNext(newest);
+        successor.setPrev(newest);
         size++;
     }
-    private void remove(Node<T> nodeForRemove){
-        Node<T> aheadRemovable = nodeForRemove.getNext();
-        Node<T> behindRemovable = nodeForRemove.getPrev();
+    private T remove(Node<T> nodeForRemove){
+        Node<T> predecessor = nodeForRemove.getNext();
+        Node<T> successor = nodeForRemove.getPrev();
+        predecessor.setNext(successor);
+        successor.setPrev(predecessor);
+        size--;
+        return nodeForRemove.getValue();
     }
-    
-
 }
